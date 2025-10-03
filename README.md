@@ -2,7 +2,7 @@ Static Hermes Native Messaging host
 
 # Compile
 
-Make sure the value `{ include: "/home/user/native-messaging-shermes/nativeMessagingHost.c" }` in `nm_shermes.ts` points to absolute path to `nativeMessagingHost.c`.
+Make sure the value `{ include: "/home/user/native-messaging-shermes/nm_c_nostartup.c" }` in `nm_shermes.ts` points to absolute path to `nm_c_nostartup.c`.
 
 ```
 shermes -typed -Wc,-nostartfiles nm_shermes.ts -o nm_shermes
