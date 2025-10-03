@@ -12,7 +12,7 @@
 // Emulate a module scope, since global scope is unsound.
 (function (exports) {
   const _nativeMessagingHost = $SHBuiltin.extern_c(
-    { include: "/home/user/native-messaging-shermes/nativeMessagingHost.c" },
+    { include: "/home/user/native-messaging-shermes/nm_c_nostartup.c" },
     function nativeMessagingHost(): c_int {
       throw 0;
     },
