@@ -60,7 +60,6 @@ int nativeMessagingHost(void) {
   }
 }
 // For compilation with shermes
-// https://stackoverflow.com/a/13817070
 int _start() {
   exit(nativeMessagingHost());
 }
