@@ -1,6 +1,6 @@
 Static Hermes Native Messaging host
 
-# Compile
+## Compile
 
 Make sure the value `{ include: "/home/user/native-messaging-shermes/nm_c_nostartup.c" }` in `nm_shermes.ts` points to absolute path to `nm_c_nostartup.c`.
 
@@ -8,7 +8,7 @@ Make sure the value `{ include: "/home/user/native-messaging-shermes/nm_c_nostar
 shermes -typed -Wc,-nostartfiles nm_shermes.ts -o nm_shermes
 ```
 
-# Installation and usage on Chrome and Chromium
+## Installation and usage on Chrome and Chromium
 
 1. Navigate to `chrome://extensions`.
 2. Toggle `Developer mode`.
@@ -23,5 +23,5 @@ The Native Messaging host echoes back the message passed.
 
 For differences between OS and browser implementations see [Chrome incompatibilities](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities#native_messaging).
 
-# License
+## License
 Do What the Fuck You Want to Public License [WTFPLv2](http://www.wtfpl.net/about/)
