@@ -70,6 +70,10 @@ shermes -typed -Wc,-I. nm_shermes.ts -o nm_shermes
   -lshermes_console_a -lhermesvmlean_a -ljsi -lwasi-emulated-mman -lsetjmp
 ```
 
+```shell
+wasm-opt -Oz -s 5 --vacuum --strip-debug nm_shermes.wasm -o nm_shermes.wasm
+```
+
 ## Installation and usage on Chrome and Chromium
 
 1. Navigate to `chrome://extensions`.
