@@ -47,6 +47,25 @@ cmake --build build-wasm --target sh-demo --parallel
 shermes -typed -Wc,-I. nm_shermes.ts -o nm_shermes
 ```
 
+Alternatively, using this source for `nm_shermes.ts`
+
+```shell
+(function (exports) {
+  const _nativeMessagingHost = $SHBuiltin.extern_c(
+    { include: "/home/user/native-messaging-shermes/nm_c_nostartup.c" },
+    function nativeMessagingHost(): c_int {
+      throw 0;
+    },
+  );
+
+ _nativeMessagingHost();
+})({});
+```
+
+```shell
+shermes -typed -Wc,-nostartfiles,-I. nm_shermes.ts -o nm_shermes
+```
+
 #### wasm32-wasip1
 
 ```shell
