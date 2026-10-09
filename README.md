@@ -71,7 +71,8 @@ shermes -typed -Wc,-nostartfiles,-I. nm_shermes.ts -o nm_shermes
 
 ##### Emit C
 ```shell
-shermes -v -Os -g -fauto-detect-static-builtins -typed -Xenable-tdz -emit-c nm_shermes.ts -o nm_shermes.c
+shermes -v -Os -g -fauto-detect-static-builtins -typed \
+  -Xenable-tdz -emit-c nm_shermes.ts -o nm_shermes.c
 ```
 
 ##### Create object file
