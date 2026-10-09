@@ -66,7 +66,15 @@ Alternatively, using this source for `nm_shermes.ts`
 shermes -typed -Wc,-nostartfiles,-I. nm_shermes.ts -o nm_shermes
 ```
 
+
 #### wasm32-wasip1
+
+##### Emit C
+```shell
+shermes -v -Os -g -fauto-detect-static-builtins -typed -Xenable-tdz -emit-c nm_shermes.ts -o nm_shermes.c
+```
+
+##### Create object file
 
 ```shell
 "${WasiSdk}"/bin/wasm32-wasi-clang nm_shermes.c -c \
@@ -74,23 +82,27 @@ shermes -typed -Wc,-nostartfiles,-I. nm_shermes.ts -o nm_shermes
   -DNDEBUG \
   -fno-strict-aliasing -fno-strict-overflow \
   -I. \
-  -I,/hermes-builds/build-wasm/lib/config \
+  -I./hermes-builds/build-wasm/lib/config \
   -I./hermes/include \
   -mllvm -wasm-enable-sjlj \
   -Wno-c23-extensions \
   -o nm_shermes.o
 ```
 
+##### Compile object file wo wasm32-wasip1
+
 ```shell
-"${WasiSdk}"/bin/clang++ -O3 nm_shermes.o ./hermes-builds/build-wasm/tools/sh-demo/CMakeFiles/sh-demo.dir/cxa.cpp.obj -o nm_shermes.wasm \
+"${WasiSdk}"/bin/clang++ -O3 nm_shermes.o \
+  ./hermes-builds/build-wasm/tools/sh-demo/CMakeFiles/sh-demo.dir/cxa.cpp.obj \
+   -o nm_shermes.wasm \
   -L./hermes-builds/build-wasm/lib \
   -L./hermes-builds/build-wasm/jsi \
   -L./hermes-builds/build-wasm/tools/shermes \
   -lshermes_console_a -lhermesvmlean_a -ljsi -lwasi-emulated-mman -lsetjmp
 ```
-
+##### Strip WASM binary
 ```shell
-wasm-opt -Oz -s 5 --vacuum --strip-debug nm_shermes.wasm -o nm_shermes.wasm
+"${WasiSdk}"/bin/strip -s nm_shermes.wasm
 ```
 
 ## Installation and usage on Chrome and Chromium
