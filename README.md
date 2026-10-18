@@ -3,6 +3,8 @@
 > [hermes](https://github.com/tmikov/hermes/tree/shermes-wasm)
 > Hermes is a JavaScript engine built for fast start-up and low memory use. Its whole design centers on compiling JavaScript ahead of time: apps ship compact bytecode, or optionally native code, and the engine does as little work as possible when they launch. Hermes was created for React Native, where it is the default engine. It also runs standalone or can be embedded as a library in other programs.
 
+See `tmikov/hermes/tree/shermes-wasm` at [Commit `e6095b0` [SH] Changes to compile with wasi-sdk](https://github.com/tmikov/hermes/commit/e6095b028a6d34c78eb2803ec2d11650f9a925ce) and [Commit `04edc57` [SH]tools/sh-demo: conveniently experiment with native compilation](https://github.com/tmikov/hermes/commit/04edc57a7709d82b83e37ca451ce1b55b850ce2a) for WASI support and compilation details.
+
 ### Building
 See [Building](https://gist.github.com/guest271314/b10eac16be88350ffcd19387e22ad4d5#building) in [Compiling JavaScript to WASM with WASI support using Static Hermes](https://gist.github.com/guest271314/b10eac16be88350ffcd19387e22ad4d5#file-shermes-wasi-md).
 ```shell
