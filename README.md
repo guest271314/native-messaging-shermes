@@ -5,38 +5,40 @@
 
 ### Building
 See [Building](https://gist.github.com/guest271314/b10eac16be88350ffcd19387e22ad4d5#building) in [Compiling JavaScript to WASM with WASI support using Static Hermes](https://gist.github.com/guest271314/b10eac16be88350ffcd19387e22ad4d5#file-shermes-wasi-md).
-
 ```shell
-git clone --branch shermes-wasm https://github.com/tmikov/hermes
+sudo apt install python3-pygments python3-yaml
 ```
 ```shell
-wget --show-progress --progress=bar -H -O wasi-sdk.tar.gz \
-'https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-33/wasi-sdk-33.0-x86_64-linux.tar.gz' \
-&& tar -xf wasi-sdk.tar.gz \
-&& mv wasi-sdk-33.0-x86_64-linux wasi-sdk \
-&& rm wasi-sdk.tar.gz 
+git clone https://github.com/guest271314/native-messaging-shermes
+cd native-messaging-shermes
+git clone --branch shermes-wasm https://github.com/tmikov/hermes static-hermes-wasm
+```
+```shell
+curl -L "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/wasi-sdk-25.0-x86_64-linux.tar.gz" | tar -xz --one-top-level="wasi-sdk-25"
+```
+
+```shell
+export HermesSourcePath=$PWD/static-hermes-wasm
+export WasiSdk=$PWD/wasi-sdk-25
 ```
 #### Build host
 
 ```shell
-mkdir hermes-builds
-cd hermes-builds
-export HermesSourcePath=../hermes
-export WasiSdk=../wasi-sdk
-cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -S ${HermesSourcePath?} -B build-host
-cmake --build build-host --target hermesc --target hermes --target shermes --parallel
+cmake --build build-host --target hermesc --target hermes --target shermes \
+--target shermes_console_a --target shermes_console --target hermesvmlean_a --parallel
 ```
 #### Compile the Hermes VM to Wasm with WASI support
 
 ```shell
-cmake -G Ninja -S ${HermesSourcePath?} -B build-wasm \
+cmake -S ${HermesSourcePath?} -B build-wasm \
 -DCMAKE_BUILD_TYPE=MinSizeRel \
 -DCMAKE_TOOLCHAIN_FILE=${WasiSdk?}/share/cmake/wasi-sdk.cmake \
 -DIMPORT_HOST_COMPILERS=build-host/ImportHostCompilers.cmake \
 -DHERMES_UNICODE_LITE=ON \
 -DLLVM_ENABLE_THREADS=0 \
 -DHERMES_ALLOW_BOOST_CONTEXT=0 \
--DHERMES_CHECK_NATIVE_STACK=OFF
+-DHERMES_CHECK_NATIVE_STACK=OFF \
+-DHERMES_ENABLE_INTL=OFF
 #  Build the VM and libraries
 cmake --build build-wasm --target sh-demo --parallel
 ```
@@ -63,7 +65,7 @@ Alternatively, using this source for `nm_shermes.ts`
 ```
 
 ```shell
-shermes -typed -Wc,-nostartfiles,-I. nm_shermes.ts -o nm_shermes
+./build-host/bin/shermes -typed -Wc,-nostartfiles,-I. nm_shermes.ts -o nm_shermes
 ```
 
 
@@ -71,20 +73,19 @@ shermes -typed -Wc,-nostartfiles,-I. nm_shermes.ts -o nm_shermes
 
 ##### Emit C
 ```shell
-shermes -v -Os -g -fauto-detect-static-builtins -typed \
-  -Xenable-tdz -emit-c nm_shermes.ts -o nm_shermes.c
-```
+./build-host/bin/shermes -v -Os -g -fauto-detect-static-builtins -typed \
+  -Xenable-tdz -emit-c nm_shermes.ts -o nm_shermes.c```
 
 ##### Create object file
 
 ```shell
-"${WasiSdk}"/bin/wasm32-wasi-clang nm_shermes.c -c \
+"${WasiSdk}"/bin/clang nm_shermes.c -c \
   -O3 \
   -DNDEBUG \
   -fno-strict-aliasing -fno-strict-overflow \
   -I. \
-  -I./hermes-builds/build-wasm/lib/config \
-  -I./hermes/include \
+  -I./build-wasm/lib/config \
+  -I./static-hermes-wasm/include \
   -mllvm -wasm-enable-sjlj \
   -Wno-c23-extensions \
   -o nm_shermes.o
@@ -94,11 +95,11 @@ shermes -v -Os -g -fauto-detect-static-builtins -typed \
 
 ```shell
 "${WasiSdk}"/bin/clang++ -O3 nm_shermes.o \
-  ./hermes-builds/build-wasm/tools/sh-demo/CMakeFiles/sh-demo.dir/cxa.cpp.obj \
+  ./build-wasm/tools/sh-demo/CMakeFiles/sh-demo.dir/cxa.cpp.obj \
    -o nm_shermes.wasm \
-  -L./hermes-builds/build-wasm/lib \
-  -L./hermes-builds/build-wasm/jsi \
-  -L./hermes-builds/build-wasm/tools/shermes \
+  -L./build-wasm/lib \
+  -L./build-wasm/jsi \
+  -L./build-wasm/tools/shermes \
   -lshermes_console_a -lhermesvmlean_a -ljsi -lwasi-emulated-mman -lsetjmp
 ```
 ##### Strip WASM binary
@@ -115,7 +116,7 @@ shermes -v -Os -g -fauto-detect-static-builtins -typed \
 5. Note the generated extension ID.
 6. Open `nm_shermes.json` in a text editor, set `"path"` to absolute path of `nm_shermes` (native executable), or `nm_shermes.sh` (shellscript to execute `wasmtime nm_shermes.wasm`) and `chrome-extension://<ID>/` using ID from 5 in `"allowed_origins"` array; and make sure `wasmtime` is in `PATH` and `nm_shermes.sh` is executable (when executing `nm_shermes.wasm` with a WASM runtime). and `chrome-extension://<ID>/` using ID from 5 in `"allowed_origins"` array. 
 7. Copy the file to Chrome or Chromium configuration folder, e.g., Chromium on \*nix `~/.config/chromium/NativeMessagingHosts`; Chrome dev channel on \*nix `~/.config/google-chrome-unstable/NativeMessagingHosts`.
-8. To test click `service worker` link in panel of unpacked extension which is DevTools for `background.js` in MV3 `ServiceWorker`, observe echo'ed message from `shermes` Native Messaging host. To disconnect run `port.disconnect()`.
+8. To test click `service worker` link in panel of unpacked extension which is DevTools for `background.js` in MV3 `ServiceWorker`, observe echo'ed message from Hermes `static_h` branch (`shermes`) Native Messaging host. To disconnect run `port.disconnect()`.
 
 The Native Messaging host echoes back the message passed. 
 
