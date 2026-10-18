@@ -46,7 +46,7 @@ cmake --build build-wasm --target sh-demo --parallel
 ### Compile
 #### Native executable
 ```
-shermes -typed -Wc,-I. nm_shermes.ts -o nm_shermes
+./build-host/bin/shermes -typed -Wc,-I. nm_shermes.ts -o nm_shermes
 ```
 
 Alternatively, using this source for `nm_shermes.ts`
