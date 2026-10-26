@@ -122,7 +122,7 @@ Alternatively, using this source for `nm_shermes.ts`
 3. Click `Load unpacked`.
 4. Select `native-messaging-shermes` folder.
 5. Note the generated extension ID.
-6. Open `nm_shermes.json` in a text editor, set `"path"` to absolute path of `nm_shermes` (native executable), or `nm_shermes.sh` (shellscript to execute `wasmtime nm_shermes.wasm`) and `chrome-extension://<ID>/` using ID from 5 in `"allowed_origins"` array; and make sure `wasmtime` is in `PATH` and `nm_shermes.sh` is executable (when executing `nm_shermes.wasm` with a WASM runtime). and `chrome-extension://<ID>/` using ID from 5 in `"allowed_origins"` array. 
+6. Open `nm_shermes.json` in a text editor, set `"path"` to absolute path of `nm_shermes` (native executable), or `nm_shermes.sh` (shellscript to execute `wasmtime nm_shermes.wasm`) and `chrome-extension://<ID>/` using ID from 5 in `"allowed_origins"` array; and make sure `wasmtime` is in `PATH` and `nm_shermes.sh` is executable (when executing `nm_shermes.wasm` with a WASM runtime). 
 7. Copy the file to Chrome or Chromium configuration folder, e.g., Chromium on \*nix `~/.config/chromium/NativeMessagingHosts`; Chrome dev channel on \*nix `~/.config/google-chrome-unstable/NativeMessagingHosts`.
 8. To test click `service worker` link in panel of unpacked extension which is DevTools for `background.js` in MV3 `ServiceWorker`, observe echo'ed message from Hermes `static_h` branch (`shermes`) Native Messaging host. To disconnect run `port.disconnect()`.
 
