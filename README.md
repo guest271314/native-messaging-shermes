@@ -82,7 +82,8 @@ Alternatively, using this source for `nm_shermes.ts`
 ##### Emit C
 ```shell
 ./build-host/bin/shermes -v -Os -g -fauto-detect-static-builtins -typed \
-  -Xenable-tdz -emit-c nm_shermes.ts -o nm_shermes.c```
+  -Xenable-tdz -emit-c nm_shermes.ts -o nm_shermes.c
+```
 
 ##### Create object file
 
