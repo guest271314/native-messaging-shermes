@@ -100,7 +100,7 @@ Alternatively, using this source for `nm_shermes.ts`
   -o nm_shermes.o
 ```
 
-##### Compile object file wo wasm32-wasip1
+##### Compile object file to wasm32-wasip1
 
 ```shell
 "${WasiSdk}"/bin/clang++ -O3 nm_shermes.o \
